@@ -1,0 +1,48 @@
+{
+    "type": "module",
+    "scripts": {
+        "dev": "node --loader ts-node/esm --watch src/index.ts",
+        "start": "node dist/index.js",
+        "build": "tsc",
+        "test": "jest"
+      },
+    "name": "fastify_eterna",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "directories": {
+        "test": "tests"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/random-player-x/Eterna_backend.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/random-player-x/Eterna_backend/issues"
+    },
+    "homepage": "https://github.com/random-player-x/Eterna_backend#readme",
+    "dependencies": {
+        "axios": "^1.13.2",
+        "axios-retry": "^4.5.0",
+        "bottleneck": "^2.19.5",
+        "fastify": "^5.6.1",
+        "ioredis": "^5.8.2",
+        "ws": "^8.18.3",
+        "zod": "^4.1.12"
+    },
+    "devDependencies": {
+        "@types/jest": "^30.0.0",
+        "@types/node": "^24.10.0",
+        "@types/supertest": "^6.0.3",
+        "@types/ws": "^8.18.1",
+        "jest": "^30.2.0",
+        "supertest": "^7.1.4",
+        "ts-jest": "^29.4.5",
+        "ts-node": "^10.9.2",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.9.3"
+    }
+}
