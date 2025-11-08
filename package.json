@@ -5,7 +5,7 @@
         "start": "node dist/index.js",
         "build": "tsc",
         "test": "jest"
-      },
+    },
     "name": "fastify_eterna",
     "version": "1.0.0",
     "description": "",
