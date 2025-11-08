@@ -2,6 +2,8 @@
 import Fastify from "fastify";
 import { tokensRoute } from "./routes/tokens.js";
 import { searchTokens, getTokenDetails } from "./sources/dexscreener.js";
+import { pollDex } from "./poller.js";
+import { set } from "zod";
 const app = Fastify({ logger: true });
 
 app.get("/healthz", async () => {
@@ -27,4 +29,7 @@ app.listen({ port: PORT, host: "0.0.0.0" }, (err, addr) => {
     process.exit(1);
   }
   app.log.info(`✅ Server running at ${addr}`);
+
+  // start polling
+  setInterval(pollDex, 10000);
 });
