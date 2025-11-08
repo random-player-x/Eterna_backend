@@ -16,5 +16,7 @@ export function normalizeTokenData(tokenData: any) {
         volume24h: Number(best.volume?.h24 ?? 0),
         liquidityUsd: Number(best.liquidity?.usd ?? 0),
         priceChange24h: Number(best.priceChange?.h24 ?? 0),
+        priceChange1h: Number(best.priceChange?.h6 ?? 0),
+        priceChange6h: Number(best.priceChange?.h1 ?? 0),
     }
 }

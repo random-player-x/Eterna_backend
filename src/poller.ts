@@ -50,9 +50,11 @@ export async function pollDex() {
       price: finalPrice,
       volume24h: t.volume24h,
       liquidityUsd: t.liquidityUsd,
+      priceChange1h: t.priceChange1h,
+      priceChange6h: t.priceChange6h,
       priceChange24h: t.priceChange24h,
-      dexprice: dexUsdPrice,
-      jupiterPrice: j?.usdPrice || null,
+    //   dexprice: dexUsdPrice,
+    //   jupiterPrice: j?.usdPrice || null,
     };
   });
 
