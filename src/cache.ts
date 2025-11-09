@@ -1,4 +1,3 @@
-// src/cache.ts
 import { redis } from "./lib/redis.js";
 
 export async function setCache(key: string, value: any, ttlSeconds = 30) {

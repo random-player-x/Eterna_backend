@@ -16,19 +16,18 @@ app.register(tokensRoute);
 const PORT = Number(process.env.PORT || 8080);
 
 app.listen({ port: PORT, host: "0.0.0.0" }, async (err, addr) => {
-  if (err) {
-    app.log.error(err);
-    process.exit(1);
-  }
-  // app.log.info(`✅ Server running at ${addr}`);
-  console.log(`✅ Server running at ${addr}`);
+  if (err) throw err;
+
+  await app.ready(); // MUST
 
   initWs(app.server);
-  console.log("WS initialized");
+  console.log("WS READY");
 
-  // start polling
   // await pollDex();
   // setInterval(pollDex, 10000);
+  startScheduler();
 });
 
-startScheduler();
+
+
+

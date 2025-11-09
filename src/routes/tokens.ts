@@ -46,13 +46,11 @@ export async function tokensRoute(app: FastifyInstance){
 
             const nextCursor = start + lim < tokens.length ? start + lim : null;
 
-            const paged = tokens.slice(start, start + lim);
+            const items = tokens.slice(start, start + lim);
       
-          return {
-            nextCursor: nextCursor,
-            items: paged
-          };
+            return ({ items, nextCursor });
     });
 }
 
 // ?? nullish coalescing operator
+

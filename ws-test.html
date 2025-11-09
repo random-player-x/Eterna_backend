@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+const ws = new WebSocket("ws://localhost:8080/");
+ws.onopen = ()=> console.log("connected to ws!");
+ws.onmessage = (msg)=> console.log("WS msg:", msg.data);
+</script>
+</body>
+</html>

@@ -1,0 +1,766 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-a1b2-c3d4-e5f6a1b2c3d4",
+		"name": "Eterna Backend Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "GET Healthz",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/healthz",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"healthz"
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body matches expected content\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.ok).to.eql(true);",
+									"    pm.expect(jsonData.ts).to.be.a('number');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "WebSocket",
+			"item": [
+				{
+					"name": "Connect to WebSocket",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlWs}}",
+							"protocol": "ws",
+							"host": [
+								"{{baseUrlWs}}"
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// NOTE: This test only checks the successful 101 connection upgrade.",
+									"// To test for the 'Welcome' message, you must listen for messages",
+									"// in the Postman UI after connecting.",
+									"",
+									"pm.test(\"WebSocket connection successful\", function () {",
+									"    pm.response.to.have.status(101);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Tokens API - Basic & Pagination",
+			"item": [
+				{
+					"name": "GET Default Tokens (First Page)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response has correct structure\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('items');",
+									"    pm.expect(jsonData).to.have.property('nextCursor');",
+									"    pm.expect(jsonData.items).to.be.an('array');",
+									"});",
+									"pm.test(\"Default limit is 30 (or less if not enough data)\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.items.length).to.be.at.most(30);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET Tokens (Custom Limit)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Items array length matches limit\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.items).to.be.an('array');",
+									"    pm.expect(jsonData.items.length).to.be.at.most(10);",
+									"});",
+									"pm.test(\"Next cursor is correct\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.items.length === 10) {",
+									"        pm.expect(jsonData.nextCursor).to.eql(10);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET Tokens (Using Cursor)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?limit=5&cursor=5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "cursor",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Items array length matches limit\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.items.length).to.be.at.most(5);",
+									"});",
+									"pm.test(\"Next cursor is correct\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.items.length === 5) {",
+									"        pm.expect(jsonData.nextCursor).to.eql(10);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Tokens API - Sorting",
+			"item": [
+				{
+					"name": "Sort by Volume (Default Desc)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?sort=volume24h",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "volume24h"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Items are sorted by volume24h descending\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    if (items.length > 1) {",
+									"        pm.expect(items[0].volume24h).to.be.gte(items[1].volume24h);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Sort by Price (Asc)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?sort=priceUsd&order=asc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "priceUsd"
+								},
+								{
+									"key": "order",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Items are sorted by priceUsd ascending\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    if (items.length > 1) {",
+									"        pm.expect(items[0].priceUsd).to.be.lte(items[1].priceUsd);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Sort by Price Change (1h Desc)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?sort=priceChange&period=1h",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "priceChange"
+								},
+								{
+									"key": "period",
+									"value": "1h"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Items are sorted by priceChange1h descending\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    if (items.length > 1) {",
+									"        pm.expect(items[0].priceChange1h).to.be.gte(items[1].priceChange1h);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Sort by Price Change (6h Asc)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?sort=priceChange&period=6h&order=asc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "priceChange"
+								},
+								{
+									"key": "period",
+									"value": "6h"
+								},
+								{
+									"key": "order",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Items are sorted by priceChange6h ascending\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    if (items.length > 1) {",
+									"        pm.expect(items[0].priceChange6h).to.be.lte(items[1].priceChange6h);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Tokens API - Filtering",
+			"item": [
+				{
+					"name": "Filter by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?name=sol",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "sol"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"All items match 'sol' in name or symbol\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    const allMatch = items.every(item => ",
+									"        item.name.toLowerCase().includes('sol') || ",
+									"        item.symbol.toLowerCase().includes('sol')",
+									"    );",
+									"    pm.expect(allMatch).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Filter by Symbol",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?symbol=SOL",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "symbol",
+									"value": "SOL"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"All items match 'SOL' symbol (case-insensitive)\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    const allMatch = items.every(item => ",
+									"        item.symbol.toLowerCase() === 'sol'",
+									"    );",
+									"    pm.expect(allMatch).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Filter by Min Volume",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?minVolume24h=10000",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "minVolume24h",
+									"value": "10000"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"All items have volume24h >= 10000\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    const allMatch = items.every(item => (item.volume24h ?? 0) >= 10000);",
+									"    pm.expect(allMatch).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Filter by Min Liquidity",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?minLiquidityUsd=50000",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "minLiquidityUsd",
+									"value": "50000"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"All items have liquidityUsd >= 50000\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    const allMatch = items.every(item => (item.liquidityUsd ?? 0) >= 50000);",
+									"    pm.expect(allMatch).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Filter by Min Price",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?minPrice=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "minPrice",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"All items have priceUsd >= 10\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    const allMatch = items.every(item => (item.priceUsd ?? 0) >= 10);",
+									"    pm.expect(allMatch).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Filter (Combined) & Sort",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?name=token&minPrice=5&sort=priceUsd&order=asc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "token"
+								},
+								{
+									"key": "minPrice",
+									"value": "5"
+								},
+								{
+									"key": "sort",
+									"value": "priceUsd"
+								},
+								{
+									"key": "order",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"All items match filter criteria\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    ",
+									"    const allMatch = items.every(item => {",
+									"        const nameMatch = item.name.toLowerCase().includes('token') || item.symbol.toLowerCase().includes('token');",
+									"        const priceMatch = (item.priceUsd ?? 0) >= 5;",
+									"        return nameMatch && priceMatch;",
+									"    });",
+									"    ",
+									"    pm.expect(allMatch).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Items are sorted by priceUsd ascending\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    if (items.length > 1) {",
+									"        for(let i = 0; i < items.length - 1; i++) {",
+									"            pm.expect(items[i].priceUsd).to.be.lte(items[i+1].priceUsd);",
+									"        }",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Filter by Min Liquidity (0)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tokens?minLiquidityUsd=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "minLiquidityUsd",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"All items have liquidityUsd >= 0 (includes 0)\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const items = jsonData.items;",
+									"    const allMatch = items.every(item => (item.liquidityUsd ?? 0) >= 0);",
+									"    pm.expect(allMatch).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "baseUrlWs",
+			"value": "localhost:8080",
+			"type": "string"
+		}
+	]
+}

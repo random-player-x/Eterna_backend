@@ -17,7 +17,7 @@ export async function pollDex() {
   .slice(0, 30);
 
   const jupData = await getJupiterPrices(addresses);
-//   console.log(jupData);
+  // console.log(jupData);
 
   // 2) normalize Dex data for each address
   const dexTokens = [];
@@ -32,7 +32,8 @@ export async function pollDex() {
   const solPriceResponse = await getJupiterPrices([solMint]);
   const solPriceUsd = solPriceResponse[solMint]?.usdPrice || 0;
   const merged = mergeTokens(dexTokens, jupData, solPriceUsd);
-
+  // console.log(merged)
+  console.log("Updated", Date.now())
   // 6) store in memory
   setTokens(merged);
   broadcastUpdate({type: "update", tokens: merged});
