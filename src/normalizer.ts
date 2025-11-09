@@ -9,6 +9,7 @@ export function normalizeTokenData(tokenData: any) {
     )[0];
     
     return {
+        dexId: best.dexId || null,
         address: best.baseToken?.address || null,
         name: best.baseToken?.name || null,
         symbol: best.baseToken?.symbol || null,
@@ -18,5 +19,6 @@ export function normalizeTokenData(tokenData: any) {
         priceChange24h: Number(best.priceChange?.h24 ?? 0),
         priceChange1h: Number(best.priceChange?.h6 ?? 0),
         priceChange6h: Number(best.priceChange?.h1 ?? 0),
+        marketCapUsd: Number(best.marketCap ?? 0),
     }
 }

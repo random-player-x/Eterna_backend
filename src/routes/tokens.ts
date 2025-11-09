@@ -38,7 +38,21 @@ export async function tokensRoute(app: FastifyInstance){
             if (symbol) {
                 tokens = tokens.filter(t => t.symbol?.toLowerCase() === symbol.toLowerCase());
             }
+            // pagination below 
+
+            const {limit, cursor} = req.query as any;
+            let start = Number(cursor) || 0;
+            let lim = Number(limit) || 30;
+
+            const nextCursor = start + lim < tokens.length ? start + lim : null;
+
+            const paged = tokens.slice(start, start + lim);
       
-          return tokens;
+          return {
+            nextCursor: nextCursor,
+            items: paged
+          };
     });
 }
+
+// ?? nullish coalescing operator
