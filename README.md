@@ -6,13 +6,13 @@ Backend aggregates meme coins from DexScreener + Jupiter and pushes live price u
 
 ### Architecture Overview
 #### Component	Responsibility
-poller.ts   periodically fetches fresh data from DexScreener + Jupiter
-merge.ts	merges multi-source token data + computes final USD price
-cache.ts	Redis caching layer (prevents API spam + handles TTL)
-state.ts	holds latest snapshot in memory
-tokensRoute.ts	REST API endpoint for initial token snapshot
-wsHub.ts	WebSocket server for realtime push updates
-scheduler.ts	Bull queue job scheduling (runs poller every 10s)
+poller.ts -> periodically fetches fresh data from DexScreener + Jupiter
+merge.ts -> merges multi-source token data + computes final USD price
+cache.ts -> Redis caching layer (prevents API spam + handles TTL)
+state.ts -> holds latest snapshot in memory
+tokensRoute.ts -> REST API endpoint for initial token snapshot
+wsHub.ts -> WebSocket server for realtime push updates
+scheduler.ts -> Bull queue job scheduling (runs poller every 10s)
 Data Flow (exact same as axiom.trade discover)
 
 on backend start → scheduler registers Bull repeat job
