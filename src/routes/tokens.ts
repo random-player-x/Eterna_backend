@@ -5,7 +5,7 @@ import { getCache } from "../cache.js";
 export async function tokensRoute(app: FastifyInstance){
     app.get("/tokens", async (req, reply) =>{
 
-        const cached = getCache("tokens");
+        const cached = await getCache("tokens");
         let tokens = cached || getAllTokens();
         let period = (req.query as any).period || "24h";
         let priceChangeKey = `priceChange${period}`;
@@ -33,7 +33,7 @@ export async function tokensRoute(app: FastifyInstance){
                 tokens = tokens.filter(t => (t.liquidityUsd ?? 0) >= Number(minLiquidityUsd));
             }
             if (minPrice) {
-                tokens = tokens.filter(t => (t.price ?? 0) >= Number(minPrice));
+                tokens = tokens.filter(t => (t.priceUsd ?? 0) >= Number(minPrice));
             }
             if (symbol) {
                 tokens = tokens.filter(t => t.symbol?.toLowerCase() === symbol.toLowerCase());

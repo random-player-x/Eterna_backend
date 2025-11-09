@@ -5,8 +5,9 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false
 });
 
-export async function searchTokens(query: string) {
-  const url = `https://api.dexscreener.com/latest/dex/search?q=${encodeURIComponent(query)}`;
+export async function getLatestTokens() {
+  const url = `https://api.dexscreener.com/token-boosts/latest/v1
+  `;
   const res = await axios.get(url, { httpsAgent });
   return res.data;
 }

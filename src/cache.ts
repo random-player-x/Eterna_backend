@@ -1,19 +1,13 @@
+// src/cache.ts
+import { redis } from "./lib/redis.js";
 
-let cache = new Map<string, {value: any, expires: number}>();
-
-export function setCache(key: string, value: any, ttl: number) {
-    const expires = Date.now() + ttl;
-    cache.set(key, { value, expires });
+export async function setCache(key: string, value: any, ttlSeconds = 30) {
+  // store JSON string + expiry
+  await redis.set(key, JSON.stringify(value), "EX", ttlSeconds);
 }
 
-export function getCache(key: string): any | null {
-    const entry = cache.get(key);
-    if (!entry) return null;
-
-    if (Date.now() > entry.expires) {
-        cache.delete(key);
-        return null;
-    }
-
-    return entry.value;
+export async function getCache(key: string) {
+  const raw = await redis.get(key);
+  if (!raw) return null;
+  return JSON.parse(raw);
 }
