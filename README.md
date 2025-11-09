@@ -2,7 +2,14 @@
 ## meme-aggregator
 ### Description
 
-Backend aggregates meme coins from DexScreener + Jupiter and pushes live price updates via websocket.
+Backend aggregates meme coins from DexScreener + Jupiter and pushes live price updates via websocket. <br>
+Latest Tokens are fetched from dex screener api: https://api.dexscreener.com/token-boosts/latest/v1 and then the addresses are extracted from these, now these are fed to the jupiter price api which requires token address to give the price and other details of that token. <br>
+Both the DEXs are then combined by taking the mean of the prices and creating a new object which is returned. <br>
+After that once /tokens is hit. the next set of data is automatically updated using Poller - and scheduling, and that information is relayed using websockets. <br>
+Caching is done using redis - it was manual before that, and the cache stores the data so that /token does not need to be hit by the client again and again. And the updated data is displayed using websockets.
+
+
+
 
 ### Architecture Overview
 #### Component	Responsibility
@@ -13,9 +20,9 @@ state.ts -> holds latest snapshot in memory
 tokensRoute.ts -> REST API endpoint for initial token snapshot
 wsHub.ts -> WebSocket server for realtime push updates
 scheduler.ts -> Bull queue job scheduling (runs poller every 10s)
-Data Flow (exact same as axiom.trade discover)
+Data Flow -> (exact same as axiom.trade discover)
 
-on backend start → scheduler registers Bull repeat job
+on backend start → scheduler -> registers -> Bull repeat job
 
 bull queue triggers poll job every 10 seconds
 
