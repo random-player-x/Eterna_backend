@@ -1,5 +1,5 @@
 # Eterna_backend
-## Meme-aggregator
+## MemeCoin-Aggregator
 ### Description
 
 Backend aggregates meme coins from DexScreener + Jupiter and pushes live price updates via websocket. <br>
