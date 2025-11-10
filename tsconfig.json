@@ -5,8 +5,12 @@
       "moduleResolution": "Node",
       "esModuleInterop": true,
       "allowJs": true,
-      "strict": false
-    }
+      "strict": false,
+      "outDir": "dist",
+      "rootDir": "src"
+    },
+    "include": ["src"],          
+    "exclude": ["node_modules", "tests", "*.cjs", "*.js"]
   }
   
   

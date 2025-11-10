@@ -6,8 +6,7 @@ const httpsAgent = new https.Agent({
 });
 
 export async function getLatestTokens() {
-  const url = `https://api.dexscreener.com/token-boosts/latest/v1
-  `;
+  const url = `https://api.dexscreener.com/token-boosts/latest/v1`;
   const res = await axios.get(url, { httpsAgent });
   return res.data;
 }

@@ -27,12 +27,13 @@ export async function pollDex() {
     // console.log(flat);
     if (flat) dexTokens.push(flat);
   }
+
   // 3) get SOL price in USD from Jupiter
   const solMint = "So11111111111111111111111111111111111111112";
   const solPriceResponse = await getJupiterPrices([solMint]);
   const solPriceUsd = solPriceResponse[solMint]?.usdPrice || 0;
   const merged = mergeTokens(dexTokens, jupData, solPriceUsd);
-  // console.log(merged)
+  console.log(merged)
   console.log("Updated", Date.now())
   // 6) store in memory
   setTokens(merged);
