@@ -57,7 +57,7 @@ Filter -> ?minPriceChange24h=0&minVolume24h=10000 <br>
 Pagination -> ?limit=10&cursor=10 <br>
 
 ## Example:
-### GET /tokens?period=1h&sort=priceChange&order=desc&minVolume24h=20000&limit=10&cursor=0
+#### GET /tokens?period=1h&sort=priceChange&order=desc&minVolume24h=20000&limit=10&cursor=0
 
 WebSocket (Realtime)
 
