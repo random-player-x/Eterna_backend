@@ -91,5 +91,8 @@ Cursor pagination	✅ <br>
 Task scheduling	✅ Bull queue <br>
 No heavy blockchain logic	✅ <br>
 
+<img width="1330" height="1440" alt="image" src="https://github.com/user-attachments/assets/e8ad4fef-2289-4672-8368-33510ad6e96e" />
+
+
 <!-- poller has ONLY ONE execution per interval (BullMQ handles it),
 frontend may hit /tokens unlimited times — system stays stable. -->
